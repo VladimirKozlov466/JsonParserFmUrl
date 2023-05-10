@@ -33,16 +33,38 @@ public class JsonFmUrl {
             JSONObject json = new JSONObject(builder.toString());
 //            System.out.println(json);
             JSONObject jsonValute = (JSONObject) json.get("Valute");
-//            System.out.println(jsonValute);
+            System.out.println(jsonValute);
 
             Map<String, Object> map = jsonToMap(jsonValute);
 
-            for (String key : map.keySet()) {
-                if (key.contains("USD")) {
+            Map<String, Float> currencyMap = new HashMap<>();
 
-                    System.out.println(key + " : " + map.get(key));
+            for (String key: map.keySet()) {
+                float currentRate = 0;
+                String additionalKey = "";
+                String currencyToString = map.get(key).toString();
+                List<String> currencyToList = new ArrayList<>(Arrays.asList(currencyToString.toLowerCase()
+                        .replace("{", "").replace("}", "").split(",")));
+                for (int i = 0; i < currencyToList.size(); i++) {
+
+                    if(currencyToList.get(i).contains("value=")) {
+                        currentRate = Float.parseFloat(currencyToList.get(i).replace("value=", ""));
+
+                    } else if (currencyToList.get(i).contains("name=")) {
+                        additionalKey = currencyToList.get(i).replace("name=", "");
+                        currencyMap.put(additionalKey, currentRate);
+                    }
                 }
+                currencyMap.put(key, currentRate);
+
+
             }
+
+            Float parsedFloat = currencyMap.get("USD");
+            Float parsedFloat1 = currencyMap.get("EUR");
+            System.out.println("Курс USD = " + parsedFloat);
+            System.out.println("EUR = " + parsedFloat1);
+
 
 
         } catch (Exception e) {
