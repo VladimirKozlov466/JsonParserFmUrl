@@ -1,96 +1,45 @@
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JsonFmUrl {
 
-//    public static void main(String[] args) {
-//
-//
-//        JSONObject parsedFromUrl;
-//
-//        {
-//            try {
-//                parsedFromUrl = getJsonByUrl();
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//
-//        JSONObject jsonCurrenciesOnly = parsedFromUrl.getJSONObject("Valute");
-//
-//        Map<String, Object> fullMap = jsonToMap(jsonCurrenciesOnly);
-//
-//        Map<String, Float> rateOnlyMap = getSimpleMap(fullMap);
-//
-//
-////        String url1 = "https://www.cbr-xml-daily.ru/daily_json.js";
-////        try {
-////            URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
-////            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-////            conn.setRequestMethod("GET");
-////            conn.setRequestProperty("Accept", "application/json");
-////
-////            if (conn.getResponseCode() != 200) {
-////                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
-////            }
-////
-////            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-////
-////            String output;
-////            StringBuilder builder = new StringBuilder();
-////            while ((output = br.readLine()) != null) {
-////                builder.append(output);
-////            }
-////
-////            conn.disconnect();
-////
-////            JSONObject json = new JSONObject(builder.toString());
-//////            System.out.println(json);
-////            JSONObject jsonValute = (JSONObject) json.get("Valute");
-////            System.out.println(jsonValute);
-////
-////            Map<String, Object> map = jsonToMap(jsonValute);
-////
-////            Map<String, Float> currencyMap = new HashMap<>();
-//
-////        for (String key: fullMap.keySet()) {
-////            float currentRate = 0;
-////            String additionalKey = "";
-////            String currencyToString = fullMap.get(key).toString();
-////            List<String> currencyToList = new ArrayList<>(Arrays.asList(currencyToString.toLowerCase()
-////                    .replace("{", "").replace("}", "").split(",")));
-////            for (int i = 0; i < currencyToList.size(); i++) {
-////
-////                if(currencyToList.get(i).contains("value=")) {
-////                    currentRate = Float.parseFloat(currencyToList.get(i).replace("value=", ""));
-////
-////                } else if (currencyToList.get(i).contains("name=")) {
-////                    additionalKey = currencyToList.get(i).replace("name=", "").trim();
-////                    rateOnlyMap.put(additionalKey, currentRate);
-////                }
-////            }
-////            rateOnlyMap.put(key, currentRate);
-////
-////
-////        }
-//
-//        Float parsedFloat = rateOnlyMap.get("USD");
-//        Float parsedFloat1 = rateOnlyMap.get("доллар сша");
-//        System.out.println("Курс USD = " + parsedFloat);
-//        System.out.println("EUR = " + parsedFloat1);
-//
-//
-//
-//    }
+    private static final String TAG_PATH = "src\\example3.xlsx";
 
+    public static void writeFoundMatchesToExcel(Map<String, Float> stringFloatMap) throws IOException{
+        XSSFWorkbook workbook;
+        workbook = new XSSFWorkbook();
+
+        XSSFSheet sheet = workbook.createSheet("Курсы валют");
+
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("Наименование валюты");
+        headerRow.createCell(1).setCellValue("Курс к RUB");
+
+        int rowNum = 1;
+
+        for (Map.Entry<String, Float> entry : stringFloatMap.entrySet()) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(entry.getKey());
+            row.createCell(1).setCellValue(entry.getValue());
+        }
+
+        FileOutputStream file = new FileOutputStream(TAG_PATH);
+        workbook.write(file);
+        file.close();
+        System.out.println("Список валют сохранен в файл " + TAG_PATH);
+    }
     public static Map<String, Float> matchedCurrenciesMap (Map<String, Float> stringFloatMap, String searchingKey) {
 
         Map<String, Float> matchedCurrencies = new HashMap<>();
@@ -122,17 +71,17 @@ public class JsonFmUrl {
 
         for (String key: map.keySet()) {
             float currentRate = 0;
-            String additionalKey = "";
+            String additionalKey;
             String currencyToString = map.get(key).toString();
             List<String> currencyToList = new ArrayList<>(Arrays.asList(currencyToString.toLowerCase()
                     .replace("{", "").replace("}", "").split(",")));
-            for (int i = 0; i < currencyToList.size(); i++) {
+            for (String s : currencyToList) {
 
-                if(currencyToList.get(i).contains("value=")) {
-                    currentRate = Float.parseFloat(currencyToList.get(i).replace("value=", ""));
+                if (s.contains("value=")) {
+                    currentRate = Float.parseFloat(s.replace("value=", ""));
 
-                } else if (currencyToList.get(i).contains("name=")) {
-                    additionalKey = currencyToList.get(i).replace("name=", "").trim();
+                } else if (s.contains("name=")) {
+                    additionalKey = s.replace("name=", "").trim();
                     rateOnlyMap.put(additionalKey, currentRate);
                 }
             }
@@ -200,7 +149,7 @@ public class JsonFmUrl {
     }
 
     public static List<Object> toList(JSONArray array) throws JSONException {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             Object value = array.get(i);
             if (value instanceof JSONArray) {
@@ -213,17 +162,17 @@ public class JsonFmUrl {
         return list;
     }
 
-    public static void showSearchResult (Map<String, Float> stringFloatMap, String keySearched) {
-        String searchKey = keySearched.toLowerCase().replace("\n", "").trim();
-        String searchUpperValues = searchKey.toUpperCase();
-        if (stringFloatMap.containsKey(searchKey)) {
-            System.out.println("Курс " + keySearched + " = " + stringFloatMap.get(searchKey));
-        }
-        else if (stringFloatMap.containsKey(searchUpperValues)){
-            System.out.println("Курс " + searchUpperValues + " = " + stringFloatMap.get(searchUpperValues));
-        }
-        else {
-            System.out.println("Такой валюты нет в списке. Проверьте название");
-        }
-    }
+//    public static void showSearchResult (Map<String, Float> stringFloatMap, String keySearched) {
+//        String searchKey = keySearched.toLowerCase().replace("\n", "").trim();
+//        String searchUpperValues = searchKey.toUpperCase();
+//        if (stringFloatMap.containsKey(searchKey)) {
+//            System.out.println("Курс " + keySearched + " = " + stringFloatMap.get(searchKey));
+//        }
+//        else if (stringFloatMap.containsKey(searchUpperValues)){
+//            System.out.println("Курс " + searchUpperValues + " = " + stringFloatMap.get(searchUpperValues));
+//        }
+//        else {
+//            System.out.println("Такой валюты нет в списке. Проверьте название");
+//        }
+//    }
 }

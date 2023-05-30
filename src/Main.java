@@ -1,16 +1,11 @@
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 
-
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         JSONObject parsedFromUrl;
 
         {
@@ -63,38 +58,11 @@ public class Main {
 
         Map<String, Float> matchedCurrencies = JsonFmUrl.matchedCurrenciesMap(rateOnlyMap, currencyName);
 
-//        if (matchedCurrencies.size() > 0) {
-//            System.out.println("Возможно вы искали:");
-//            matchedCurrencies.forEach((key, value) -> System.out.println("Курс " + key + " = " + value));
-//        } else {
-//            System.out.println("Такой валюты нет в списке. Проверьте название");
-//        }
+
         JsonFmUrl.printFoundCurrencies(matchedCurrencies);
 
-        XSSFWorkbook workbook;
-        workbook = new XSSFWorkbook();
 
-        XSSFSheet sheet = workbook.createSheet("Курсы валют");
-
-        Row headerRow = sheet.createRow(0);
-        headerRow.createCell(0).setCellValue("Наименование валюты");
-        headerRow.createCell(1).setCellValue("Курс к RUB");
-
-        int rowNum = 1;
-
-        for (Map.Entry<String, Float> entry : matchedCurrencies.entrySet()) {
-            Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue((String) entry.getKey());
-            row.createCell(1).setCellValue((Float) entry.getValue());
-        }
-
-        try {
-            FileOutputStream file = new FileOutputStream("src\\example3.xlsx");
-            workbook.write(file);
-            file.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        JsonFmUrl.writeFoundMatchesToExcel(matchedCurrencies);
 
 //
 //        Set<String> keysMatched = rateOnlyMap.keySet().stream()
@@ -107,10 +75,6 @@ public class Main {
 //        } else {
 //            System.out.println("Такой валюты нет в списке. Проверьте название");
 //        }
-//        Float parsedFloat = rateOnlyMap.get("USD");
-//        Float parsedFloat1 = rateOnlyMap.get("доллар сша");
-//        System.out.println("Курс USD = " + parsedFloat);
-//        System.out.println("доллар сша = " + parsedFloat1);
 
     }
 }
