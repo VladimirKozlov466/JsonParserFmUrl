@@ -33,8 +33,8 @@ public class Main {
                 "в формате кода валюты (Например QAR) или название (например Китайский юань)");
 
         String currencyName = in.nextLine();
-        String searchKey = currencyName.toLowerCase().replace("\n", "").trim();
-        String searchUpperValues = searchKey.toUpperCase();
+//        String searchKey = currencyName.toLowerCase().replace("\n", "").trim();
+//        String searchUpperValues = searchKey.toUpperCase();
 //
 //        if (rateOnlyMap.containsKey(searchKey)) {
 //            System.out.println("Курс " + currencyName + " = " + rateOnlyMap.get(searchKey));
@@ -47,25 +47,29 @@ public class Main {
 //        }
 //        JsonFmUrl.showSearchResult(rateOnlyMap, currencyName);
 
-        Map<String, Float> matchedCurrencies = new HashMap<>();
+//        Map<String, Float> matchedCurrencies = new HashMap<>();
+//
+//        for (Map.Entry<String, Float> entry : rateOnlyMap.entrySet()) {
+//            String key = entry.getKey();
+//            Float value = entry.getValue();
+//            if (key.contains(searchUpperValues)) {
+////                System.out.println("Курс " + key + " = " + value);
+//                matchedCurrencies.put(key, value);
+//            } else if (key.contains(searchKey)) {
+////                System.out.println("Курс " + key + " = " + value);
+//                matchedCurrencies.put(key, value);
+//            }
+//        }
 
-        for (Map.Entry<String, Float> entry : rateOnlyMap.entrySet()) {
-            String key = entry.getKey();
-            Float value = entry.getValue();
-            if (key.contains(searchUpperValues)) {
-//                System.out.println("Курс " + key + " = " + value);
-                matchedCurrencies.put(key, value);
-            } else if (key.contains(searchKey)) {
-//                System.out.println("Курс " + key + " = " + value);
-                matchedCurrencies.put(key, value);
-            }
-        }
-        if (matchedCurrencies.size() > 0) {
-            System.out.println("Возможно вы искали:");
-            matchedCurrencies.forEach((key, value) -> System.out.println("Курс " + key + " = " + value));
-        } else {
-            System.out.println("Такой валюты нет в списке. Проверьте название");
-        }
+        Map<String, Float> matchedCurrencies = JsonFmUrl.matchedCurrenciesMap(rateOnlyMap, currencyName);
+
+//        if (matchedCurrencies.size() > 0) {
+//            System.out.println("Возможно вы искали:");
+//            matchedCurrencies.forEach((key, value) -> System.out.println("Курс " + key + " = " + value));
+//        } else {
+//            System.out.println("Такой валюты нет в списке. Проверьте название");
+//        }
+        JsonFmUrl.printFoundCurrencies(matchedCurrencies);
 
         XSSFWorkbook workbook;
         workbook = new XSSFWorkbook();

@@ -91,6 +91,32 @@ public class JsonFmUrl {
 //
 //    }
 
+    public static Map<String, Float> matchedCurrenciesMap (Map<String, Float> stringFloatMap, String searchingKey) {
+
+        Map<String, Float> matchedCurrencies = new HashMap<>();
+        String searchKey = searchingKey.toLowerCase().replace("\n", "").trim();
+        String searchUpperValues = searchKey.toUpperCase();
+
+        for (Map.Entry<String, Float> entry : stringFloatMap.entrySet()) {
+            String key = entry.getKey();
+            Float value = entry.getValue();
+            if (key.contains(searchUpperValues)) {
+                matchedCurrencies.put(key, value);
+            } else if (key.contains(searchKey)) {
+                matchedCurrencies.put(key, value);
+            }
+        }
+        return matchedCurrencies;
+    }
+
+    public static void printFoundCurrencies (Map<String, Float> stringFloatMap) {
+        if (stringFloatMap.size() > 0) {
+            System.out.println("Возможно вы искали:");
+            stringFloatMap.forEach((key, value) -> System.out.println("Курс " + key + " = " + value));
+        } else {
+            System.out.println("Такой валюты нет в списке. Проверьте название");
+        }
+    }
     public static Map<String, Float> getSimpleMap (Map<String, Object> map) {
         Map<String, Float> rateOnlyMap = new HashMap<>();
 
