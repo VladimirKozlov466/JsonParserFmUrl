@@ -16,6 +16,7 @@ import org.json.JSONObject;
 public class JsonFmUrl {
 
     private static final String TAG_PATH = "src\\example3.xlsx";
+    private static final String TAG_URL = "https://www.cbr-xml-daily.ru/daily_json.js";
 
     public static void writeFoundMatchesToExcel(Map<String, Float> stringFloatMap) throws IOException{
         XSSFWorkbook workbook;
@@ -92,9 +93,9 @@ public class JsonFmUrl {
         return rateOnlyMap;
     }
 
-    public static JSONObject getJsonByUrl () throws IOException, JSONException {
+    public static JSONObject getJsonByUrl () throws JSONException {
         try {
-            URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
+            URL url = new URL(TAG_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
@@ -161,18 +162,4 @@ public class JsonFmUrl {
         }
         return list;
     }
-
-//    public static void showSearchResult (Map<String, Float> stringFloatMap, String keySearched) {
-//        String searchKey = keySearched.toLowerCase().replace("\n", "").trim();
-//        String searchUpperValues = searchKey.toUpperCase();
-//        if (stringFloatMap.containsKey(searchKey)) {
-//            System.out.println("Курс " + keySearched + " = " + stringFloatMap.get(searchKey));
-//        }
-//        else if (stringFloatMap.containsKey(searchUpperValues)){
-//            System.out.println("Курс " + searchUpperValues + " = " + stringFloatMap.get(searchUpperValues));
-//        }
-//        else {
-//            System.out.println("Такой валюты нет в списке. Проверьте название");
-//        }
-//    }
 }
