@@ -1,8 +1,13 @@
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 
+
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -62,6 +67,30 @@ public class Main {
             System.out.println("Такой валюты нет в списке. Проверьте название");
         }
 
+        XSSFWorkbook workbook;
+        workbook = new XSSFWorkbook();
+
+        XSSFSheet sheet = workbook.createSheet("Курсы валют");
+
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("Наименование валюты");
+        headerRow.createCell(1).setCellValue("Курс к RUB");
+
+        int rowNum = 1;
+
+        for (Map.Entry<String, Float> entry : matchedCurrencies.entrySet()) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue((String) entry.getKey());
+            row.createCell(1).setCellValue((Float) entry.getValue());
+        }
+
+        try {
+            FileOutputStream file = new FileOutputStream("src\\example3.xlsx");
+            workbook.write(file);
+            file.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 //
 //        Set<String> keysMatched = rateOnlyMap.keySet().stream()
