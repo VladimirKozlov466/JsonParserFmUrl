@@ -28,18 +28,19 @@ public class Main {
                 "в формате кода валюты (Например QAR) или название (например Китайский юань)");
 
         String currencyName = in.nextLine();
-        String searchKey = currencyName.toLowerCase().replace("\n", "").trim();
-        String searchUpperValues = searchKey.toUpperCase();
-
-        if (rateOnlyMap.containsKey(searchKey)) {
-            System.out.println("Курс " + currencyName + " = " + rateOnlyMap.get(searchKey));
-        }
-        else if (rateOnlyMap.containsKey(searchUpperValues)){
-            System.out.println("Курс " + searchUpperValues + " = " + rateOnlyMap.get(searchUpperValues));
-        }
-        else {
-            System.out.println("Такой валюты нет в списке. Проверьте название");
-        }
+//        String searchKey = currencyName.toLowerCase().replace("\n", "").trim();
+//        String searchUpperValues = searchKey.toUpperCase();
+//
+//        if (rateOnlyMap.containsKey(searchKey)) {
+//            System.out.println("Курс " + currencyName + " = " + rateOnlyMap.get(searchKey));
+//        }
+//        else if (rateOnlyMap.containsKey(searchUpperValues)){
+//            System.out.println("Курс " + searchUpperValues + " = " + rateOnlyMap.get(searchUpperValues));
+//        }
+//        else {
+//            System.out.println("Такой валюты нет в списке. Проверьте название");
+//        }
+        JsonFmUrl.showSearchResult(rateOnlyMap, currencyName);
 
 //        Float parsedFloat = rateOnlyMap.get("USD");
 //        Float parsedFloat1 = rateOnlyMap.get("доллар сша");

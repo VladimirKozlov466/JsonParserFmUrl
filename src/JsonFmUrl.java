@@ -186,4 +186,18 @@ public class JsonFmUrl {
         }
         return list;
     }
+
+    public static void showSearchResult (Map<String, Float> stringFloatMap, String keySearched) {
+        String searchKey = keySearched.toLowerCase().replace("\n", "").trim();
+        String searchUpperValues = searchKey.toUpperCase();
+        if (stringFloatMap.containsKey(searchKey)) {
+            System.out.println("Курс " + keySearched + " = " + stringFloatMap.get(searchKey));
+        }
+        else if (stringFloatMap.containsKey(searchUpperValues)){
+            System.out.println("Курс " + searchUpperValues + " = " + stringFloatMap.get(searchUpperValues));
+        }
+        else {
+            System.out.println("Такой валюты нет в списке. Проверьте название");
+        }
+    }
 }
