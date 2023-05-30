@@ -18,6 +18,7 @@ public class JsonFmUrl {
     private static final String TAG_PATH = "src\\example3.xlsx";
     private static final String TAG_URL = "https://www.cbr-xml-daily.ru/daily_json.js";
 
+    // Метод для записи HashMap типа Map<String, Float> в Excel файл
     public static void writeFoundMatchesToExcel(Map<String, Float> stringFloatMap) throws IOException{
         XSSFWorkbook workbook;
         workbook = new XSSFWorkbook();
@@ -41,6 +42,9 @@ public class JsonFmUrl {
         file.close();
         System.out.println("Список валют сохранен в файл " + TAG_PATH);
     }
+    /* Метод для поиска ключей в HashMap типа Map<String, Float>, частично совпадающих со значением искомой строки,
+    и запись подходящихпар ключ - значение в новую HashMap типа Map<String, Float>
+     */
     public static Map<String, Float> matchedCurrenciesMap (Map<String, Float> stringFloatMap, String searchingKey) {
 
         Map<String, Float> matchedCurrencies = new HashMap<>();
@@ -58,15 +62,18 @@ public class JsonFmUrl {
         }
         return matchedCurrencies;
     }
-
+    // Метод для консольного вывода пар ключ - значение из HashMap типа Map<String, Float>
     public static void printFoundCurrencies (Map<String, Float> stringFloatMap) {
         if (stringFloatMap.size() > 0) {
             System.out.println("Возможно вы искали:");
-            stringFloatMap.forEach((key, value) -> System.out.println("Курс " + key + " = " + value));
+            stringFloatMap.forEach((key, value) -> System.out.println("Курс " + key + " = " + value + " RUB"));
         } else {
             System.out.println("Такой валюты нет в списке. Проверьте название");
         }
     }
+    /* Метод для поиска значения искомог атрибута в HashMap типа Map<String, Object> и запись
+    пары ключ - значение атрибута в новую HashMap типа Map<String, Float>
+     */
     public static Map<String, Float> getSimpleMap (Map<String, Object> map) {
         Map<String, Float> rateOnlyMap = new HashMap<>();
 
@@ -92,7 +99,7 @@ public class JsonFmUrl {
         }
         return rateOnlyMap;
     }
-
+    // Метод для для считывания JSON строки из js файла по URL в JSONObject
     public static JSONObject getJsonByUrl () throws JSONException {
         try {
             URL url = new URL(TAG_URL);
@@ -119,7 +126,7 @@ public class JsonFmUrl {
             throw new RuntimeException(e);
         }
     }
-
+    // Метод для JSONObject в HashMap типа Map<String, Object>
     public static Map<String, Object> jsonToMap(JSONObject json) throws JSONException {
         Map<String, Object> valuteMap = new HashMap<>();
 
@@ -129,6 +136,7 @@ public class JsonFmUrl {
         return valuteMap;
     }
 
+    // Метод для JSONObject в HashMap типа Map<String, Object> с рекусивным вызовом
     public static Map<String, Object> toMap(JSONObject object) throws JSONException {
         Map<String, Object> map = new HashMap<>();
 
@@ -149,6 +157,7 @@ public class JsonFmUrl {
         return map;
     }
 
+    // Метод для JSONArray в список типа List<Object>
     public static List<Object> toList(JSONArray array) throws JSONException {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {

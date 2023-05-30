@@ -88,7 +88,7 @@ public class Main {
                 System.exit(0);
             default:
                 System.out.println("Введено не корректное значение");
+                mainMenu(rateOnlyMap);
         }
     }
-
 }
