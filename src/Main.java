@@ -7,7 +7,7 @@ import java.util.*;
 public class Main {
 
     public static String timeDate;
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         //Парсим js файл с курсами валют Центробанка России по url  в JSON объект
         JSONObject parsedFromUrl = JsonFmUrl.getJsonByUrl();
@@ -28,23 +28,6 @@ public class Main {
         Map<String, Float> rateOnlyMap = JsonFmUrl.getSimpleMap(fullMap);
 
         mainMenu(rateOnlyMap);
-
-//        Scanner in = new Scanner(System.in);
-//
-//
-//        System.out.println("Введите название валюты, чтобы узнать ее курс по отношению RUR " +
-//                "в формате кода валюты (Например QAR) или название (например Китайский юань или доллар или Рупий)");
-//
-//        String currencyName = in.nextLine();
-//
-//        Map<String, Float> matchedCurrencies = JsonFmUrl.matchedCurrenciesMap(rateOnlyMap, currencyName);
-//
-//
-//        JsonFmUrl.printFoundCurrencies(matchedCurrencies);
-//
-//        System.out.println("Данные Центробанка на " + timeDate);
-//
-//        JsonFmUrl.writeFoundMatchesToExcel(matchedCurrencies);
 
     }
     public static void mainMenu(Map<String, Float> rateOnlyMap) {
